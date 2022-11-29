@@ -1,6 +1,8 @@
 # PPZ-SegNet
 In this work, we present PPZ-SegNet, a multi-object deep convolutional neural network ensemble for prostate segmentation. PPZ-SegNet is composed of a two-path 2D CNN and 3D CNN automatically constrcuted using a Bayesian hyperparameter optimization approach. The general structure of the networks is shown in Figure 1. The networks are composed of a down-sampling path followed by two up-sampling paths, denoted as up-pg (for prostate gland) and up-pz (for PZ), which produce the whole prostate and peripheral zone segmentation. 
 
+![alt text](https://github.com/mariabaldeon/PPZ-SegNet/blob/main/imges/PPZNetStructure.jpg)
+
 # Requirements
 * Python 3.7
 * Numpy 1.21.5
