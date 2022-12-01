@@ -31,45 +31,46 @@ parser.add_argument('--name3d', type=str, default="./Results_3D.mat", help='name
 parser.add_argument('--namePPZ', type=str, default="./Results_PPZSegNet.mat", help='name of the folder to save predicted segmentations using PPZSeg-Net')
 args = parser.parse_args()
 
-if args.task == 'train': 
-    List, _=createImageFileList(args.dataTrain)
-    for fold in range(1,args.folds+1): 
-        # Obtain the training-validation set for each fold
-        dta=DataTraining(List, fold)
-        dta.getTrainingData()
-        # Train 2D network
-        train2DCNN=Train2D(dta.X_train2D, dta.y_train2D, dta.y_trainPZ2D, dta.X_val2D, dta.y_valPZ2D, dta.y_val2D, args.gene2d, args.num_epochs, args.batch_size2d, args.mainloss, args.lossPZ, args.dataaug2d)
-        train2DCNN.run_training()
-        # Train 3D network
-        train3DCNN=Train3D(dta.X_train3D, dta.y_train3D, dta.y_trainPZ3D, dta.X_val3D, dta.y_valPZ3D, dta.y_val3D, args.gene3d, args.patch_size, args.num_epochs, args.batch_size3d, args.mainloss, args.lossPZ, args.dataaug3d)
-        train3DCNN.run_training()
+if __name__ =="__main__":
+    if args.task == 'train': 
+        List, _=createImageFileList(args.dataTrain)
+        for fold in range(1,args.folds+1): 
+            # Obtain the training-validation set for each fold
+            dta=DataTraining(List, fold)
+            dta.getTrainingData()
+            # Train 2D network
+            train2DCNN=Train2D(dta.X_train2D, dta.y_train2D, dta.y_trainPZ2D, dta.X_val2D, dta.y_valPZ2D, dta.y_val2D, args.gene2d, args.num_epochs, args.batch_size2d, args.mainloss, args.lossPZ, args.dataaug2d)
+            train2DCNN.run_training()
+            # Train 3D network
+            train3DCNN=Train3D(dta.X_train3D, dta.y_train3D, dta.y_trainPZ3D, dta.X_val3D, dta.y_valPZ3D, dta.y_val3D, args.gene3d, args.patch_size, args.num_epochs, args.batch_size3d, args.mainloss, args.lossPZ, args.dataaug3d)
+            train3DCNN.run_training()
 
 
-if args.task == 'evaluate': 
-    List, _=createImageFileList(args.dataTest)
-    createfolders(args.name2d, args.name3d, args.namePPZ)
-    # Get the networks
-    ppzsegnet= PPZSegNet(args.gene2d,  args.gene3d, args.imgSize, args.patch_size, args.folds)
-    ensemble2DCNN, ensemble3DCNN=ppzsegnet.getPPZSegNet()
-    
-    for path in List: 
-        # Get image to evaluate
-        img=DataManager(path, args.imgSize)
-        T2img,_,_ =img.get_img_gt()
-        
-        # Predict segmentation
-        inf=Inference(T2img, ensemble2DCNN, ensemble3DCNN, args.imgSize)
-        pred_finalWP2D, pred_finalPZ2D,pred_finalWP3D, pred_finalPZ3D,y_predWP,y_predPZ=inf.predictionAllEnsemble()
+    if args.task == 'evaluate': 
+        List, _=createImageFileList(args.dataTest)
+        createfolders(args.name2d, args.name3d, args.namePPZ)
+        # Get the networks
+        ppzsegnet= PPZSegNet(args.gene2d,  args.gene3d, args.imgSize, args.patch_size, args.folds)
+        ensemble2DCNN, ensemble3DCNN=ppzsegnet.getPPZSegNet()
 
-        # Write results for 2D ensemble 
-        ypred2DWPitk,ypred2DPZitk =inf.writeResultsFromNumpyLabel(img.itkimg, pred_finalWP2D, pred_finalPZ2D, args.name2d, img.case)
+        for path in List: 
+            # Get image to evaluate
+            img=DataManager(path, args.imgSize)
+            T2img,_,_ =img.get_img_gt()
 
-        # Write results for 3D ensemble
-        ypred3DWPitk,ypred3DPZitk =inf.writeResultsFromNumpyLabel(img.itkimg, pred_finalWP3D, pred_finalPZ3D, args.name3d, img.case)
+            # Predict segmentation
+            inf=Inference(T2img, ensemble2DCNN, ensemble3DCNN, args.imgSize)
+            pred_finalWP2D, pred_finalPZ2D,pred_finalWP3D, pred_finalPZ3D,y_predWP,y_predPZ=inf.predictionAllEnsemble()
 
-        # Write results for PPZ-SegNet
-        ypred2D3DWPitk,ypred2D3DPZitk =inf.writeResultsFromNumpyLabel(img.itkimg, y_predWP,y_predPZ, args.namePPZ, img.case)
+            # Write results for 2D ensemble 
+            ypred2DWPitk,ypred2DPZitk =inf.writeResultsFromNumpyLabel(img.itkimg, pred_finalWP2D, pred_finalPZ2D, args.name2d, img.case)
 
-        evaluate=Evaluate()
-        evaluate.CalculateAllMetrics( [img.itkgtWP, img.itkgtPZ], [(ypred2DWPitk,ypred2DPZitk),(ypred3DWPitk,ypred3DPZitk),(ypred2D3DWPitk,ypred2D3DPZitk)], img.case)
+            # Write results for 3D ensemble
+            ypred3DWPitk,ypred3DPZitk =inf.writeResultsFromNumpyLabel(img.itkimg, pred_finalWP3D, pred_finalPZ3D, args.name3d, img.case)
+
+            # Write results for PPZ-SegNet
+            ypred2D3DWPitk,ypred2D3DPZitk =inf.writeResultsFromNumpyLabel(img.itkimg, y_predWP,y_predPZ, args.namePPZ, img.case)
+
+            evaluate=Evaluate()
+            evaluate.CalculateAllMetrics( [img.itkgtWP, img.itkgtPZ], [(ypred2DWPitk,ypred2DPZitk),(ypred3DWPitk,ypred3DPZitk),(ypred2D3DWPitk,ypred2D3DPZitk)], img.case)
 
