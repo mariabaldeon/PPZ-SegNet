@@ -21,7 +21,7 @@ parser.add_argument('--batch_size2d', type=int, default=40, help='batch size for
 parser.add_argument('--batch_size3d', type=int, default=5, help='batch size for 3D CNN')
 parser.add_argument('--mainloss', type=float, default=1, help='weight for the whole prostrate loss')
 parser.add_argument('--lossPZ', type=float, default=0.1, help='weight for the PZ loss')
-parser.add_argument('--num_epochs', type=int, default=2000, help='number of epochs to train CNN')
+parser.add_argument('--num_epochs', type=int, default=3000, help='number of epochs to train CNN')
 parser.add_argument('--dataaug3d', type=list, default=[4.9, 0.3, 0.2, 0.1, 0], help='data augmentation for 3D CNN: rotation, width shift, height shift, zoom shift, horizontal flip')
 parser.add_argument('--dataaug2d', type=list, default=[33.3, 0.3, 0.4, 0.8, 1], help='data augmentation for 2D CNN: rotation, width shift, height shift, zoom shift, horizontal flip')
 parser.add_argument('--gene3d', type=list, default=[[0.06,1,5,1,16,'elu',0.00001, 9]], help='gene to construct 3D CNN')
