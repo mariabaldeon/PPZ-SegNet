@@ -24,3 +24,16 @@ To carry out the evaluation run:
 nohup python3 main.py --task evaluate & 
 ```
 The code assumes the testing dataset is located in the directory Datasets/Test. If it is in another directory, specify the path using the --dataTest argument.The code will evaluate the 2D CNN ensemble, 3D CNN ensemble, and PPZSeg-Net. Evaluation metrics will be saved in a .csv file in a folder named Evaluation_metrics. The evaluation  metrics considered are the Dice similarity coefficient (DS) and Haussdorff distance (HD). These metrices will be calculated for the 2D CNN ensemble, 3D CNN ensemble, and PPZSeg-Net. The segmentation results will be saved in the folders Results_2D.mat, Results_3D.mat, and Results_PPZSegNet.mat for the 2D CNN ensemble, 3D CNN ensemble, and PPZSeg-Net, respectively. The trained weights from this work should be located in the directory Networks/weights (link to weights: [link](https://drive.google.com/drive/folders/1wW_aBqUAe9g6eQCN9de1ILyDLg0dGPb0?usp=share_link) ). These weights will  be used for evaluation. If you wan to use other weights, locate them in this folder with the corresponding name k{fold}_{network}D.hdf5, where fold refers to the fold trained on and network to the type of network 2D or 3D.  
+
+# Citation
+If you use this code in your research, please cite our paper.
+```
+@article{wei2multi,
+  title={A Multi-object Deep Neural Network Architecture to detect Prostate Anatomy in T2-weighted MRI: Performance Evaluation},
+  author={Wei, Zhouping and Baldeon Calisto, Maria and Abudalou, Shatha and Yilmaz, Yasin and Gage, Kenneth and Pow-Sang, Julio M and Balagurunathan, Yoganand},
+  journal={Frontiers in Nuclear Medicine},
+  volume={2},
+  pages={45},
+  publisher={Frontiers}
+}
+```
